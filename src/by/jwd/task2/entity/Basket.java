@@ -5,13 +5,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.Spliterator;
 
-public class Bucket implements Serializable, Iterable<Ball> {
+public class Basket implements Serializable, Iterable<Ball> {
 
     private final Set<Ball> balls;
 
-    public Bucket() {
+    public Basket() {
         balls = new HashSet<>();
     }
 
@@ -79,8 +78,8 @@ public class Bucket implements Serializable, Iterable<Ball> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Bucket bucket = (Bucket) o;
-        return balls.equals(bucket.balls);
+        Basket basket = (Basket) o;
+        return balls.equals(basket.balls);
     }
 
     @Override
