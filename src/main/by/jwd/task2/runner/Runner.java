@@ -13,11 +13,10 @@ public class Runner {
 	    Basket basket = new Basket();
 
         for (int i = 0; i < 10; i++) {
-            Ball ball = new Ball();
             try {
-                ball.setWeight(Math.random() * 100);
-                ball.setColor(Color.values()[(int) (Math.random() * 3)]);
-                basket.put(ball);
+                Color color = Color.values()[(int) (Math.random() * 3)];
+                double weight = Math.random() * 100;
+                basket.put(new Ball(color, weight));
             } catch (InvalidArgumentException | IncompatibleStateException e) {
                 System.err.println(e.getMessage());
                 System.exit(-1);
