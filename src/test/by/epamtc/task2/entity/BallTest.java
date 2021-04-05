@@ -1,6 +1,6 @@
-package by.jwd.task2.entity;
+package by.epamtc.task2.entity;
 
-import by.jwd.task2.exception.InvalidArgumentException;
+import by.epamtc.task2.exception.InvalidArgumentException;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.*;

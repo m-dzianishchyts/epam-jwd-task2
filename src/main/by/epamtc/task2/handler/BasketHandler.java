@@ -1,8 +1,8 @@
-package by.jwd.task2.handler;
+package by.epamtc.task2.handler;
 
-import by.jwd.task2.entity.Basket;
-import by.jwd.task2.entity.Color;
-import by.jwd.task2.exception.InvalidArgumentException;
+import by.epamtc.task2.entity.Basket;
+import by.epamtc.task2.entity.Color;
+import by.epamtc.task2.exception.InvalidArgumentException;
 
 public class BasketHandler {
 

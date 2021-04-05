@@ -1,11 +1,11 @@
-package by.jwd.task2.runner;
+package by.epamtc.task2.runner;
 
-import by.jwd.task2.entity.Ball;
-import by.jwd.task2.entity.Basket;
-import by.jwd.task2.entity.Color;
-import by.jwd.task2.exception.IncompatibleStateException;
-import by.jwd.task2.exception.InvalidArgumentException;
-import by.jwd.task2.handler.BasketHandler;
+import by.epamtc.task2.entity.Ball;
+import by.epamtc.task2.entity.Basket;
+import by.epamtc.task2.entity.Color;
+import by.epamtc.task2.exception.IncompatibleStateException;
+import by.epamtc.task2.exception.InvalidArgumentException;
+import by.epamtc.task2.handler.BasketHandler;
 
 public class Runner {
 

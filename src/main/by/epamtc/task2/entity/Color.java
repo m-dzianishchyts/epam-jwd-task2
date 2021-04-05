@@ -1,4 +1,4 @@
-package by.jwd.task2.entity;
+package by.epamtc.task2.entity;
 
 public enum Color {
     WHITE,

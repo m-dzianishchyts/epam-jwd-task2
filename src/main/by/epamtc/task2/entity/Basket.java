@@ -1,7 +1,7 @@
-package by.jwd.task2.entity;
+package by.epamtc.task2.entity;
 
-import by.jwd.task2.exception.IncompatibleStateException;
-import by.jwd.task2.exception.InvalidArgumentException;
+import by.epamtc.task2.exception.IncompatibleStateException;
+import by.epamtc.task2.exception.InvalidArgumentException;
 
 import java.io.Serializable;
 import java.util.HashSet;

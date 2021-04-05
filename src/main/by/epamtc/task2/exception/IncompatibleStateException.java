@@ -1,4 +1,4 @@
-package by.jwd.task2.exception;
+package by.epamtc.task2.exception;
 
 public class IncompatibleStateException extends Exception {
 
