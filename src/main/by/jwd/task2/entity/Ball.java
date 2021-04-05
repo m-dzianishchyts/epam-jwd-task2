@@ -14,6 +14,17 @@ public class Ball implements Serializable {
         weight = 1;
     }
 
+    public Ball(Color color, double weight) throws InvalidArgumentException {
+        if (color == null) {
+            throw new InvalidArgumentException("Ball's color cannot be null.");
+        }
+        if (weight <= 0) {
+            throw new InvalidArgumentException("Ball's weight must be positive.");
+        }
+        this.color = color;
+        this.weight = weight;
+    }
+
     @Override
     public int hashCode() {
         long weightLongBits = Double.doubleToLongBits(weight);
