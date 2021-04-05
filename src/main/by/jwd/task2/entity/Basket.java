@@ -4,20 +4,29 @@ import by.jwd.task2.exception.IncompatibleStateException;
 import by.jwd.task2.exception.InvalidArgumentException;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 public class Basket implements Serializable, Iterable<Ball> {
 
+    private static final int DEFAULT_CAPACITY = 10;
+
     private final Set<Ball> balls;
     private int capacity;
     private int size;
 
+    public Basket(int capacity) throws InvalidArgumentException {
+        this();
+        if (capacity <= 0) {
+            throw new InvalidArgumentException("Capacity must be positive.");
+        }
+        this.capacity = capacity;
+    }
+
     public Basket() {
         balls = new HashSet<>();
-        capacity = 10;
+        capacity = DEFAULT_CAPACITY;
         size = 0;
     }
 
@@ -44,7 +53,7 @@ public class Basket implements Serializable, Iterable<Ball> {
         return Set.copyOf(balls);
     }
 
-    public void putAll(Collection<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
+    public void putAll(Set<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
         if (balls == null) {
             throw new InvalidArgumentException("Ball collection cannot be null");
         }
@@ -112,6 +121,11 @@ public class Basket implements Serializable, Iterable<Ball> {
         }
         boolean containsThisBall = balls.contains(ball);
         return containsThisBall;
+    }
+
+    public boolean isEmpty() {
+        boolean isEmpty = size == 0;
+        return isEmpty;
     }
 
     @Override
