@@ -1,5 +1,7 @@
 package by.jwd.task2.entity;
 
+import by.jwd.task2.exception.InvalidArgumentException;
+
 import java.io.Serializable;
 
 public class Ball implements Serializable {
@@ -41,9 +43,9 @@ public class Ball implements Serializable {
         return color;
     }
 
-    public void setColor(Color color) throws InvalidBallPropertyException {
+    public void setColor(Color color) throws InvalidArgumentException {
         if (color == null) {
-            throw new InvalidBallPropertyException("Ball's color cannot be null.");
+            throw new InvalidArgumentException("Ball's color cannot be null.");
         }
         this.color = color;
     }
@@ -52,9 +54,9 @@ public class Ball implements Serializable {
         return weight;
     }
 
-    public void setWeight(double weight) throws InvalidBallPropertyException {
+    public void setWeight(double weight) throws InvalidArgumentException {
         if (weight <= 0) {
-            throw new InvalidBallPropertyException("Ball's weight must be positive.");
+            throw new InvalidArgumentException("Ball's weight must be positive.");
         }
         this.weight = weight;
     }

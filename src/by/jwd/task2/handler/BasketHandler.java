@@ -2,13 +2,13 @@ package by.jwd.task2.handler;
 
 import by.jwd.task2.entity.Basket;
 import by.jwd.task2.entity.Color;
-import by.jwd.task2.entity.InvalidBallPropertyException;
+import by.jwd.task2.exception.InvalidArgumentException;
 
 public class BasketHandler {
 
-    public static double calculateTotalWeight(Basket basket) throws InvalidBasketException {
+    public static double calculateTotalWeight(Basket basket) throws InvalidArgumentException {
         if (basket == null) {
-            throw new InvalidBasketException("Basket cannot be null.");
+            throw new InvalidArgumentException("Basket cannot be null.");
         }
         double totalWeight = 0;
         for (var ball : basket) {
@@ -17,13 +17,12 @@ public class BasketHandler {
         return totalWeight;
     }
 
-    public static int countBallsByColor(Basket basket, Color color)
-            throws InvalidBasketException, InvalidBallPropertyException {
+    public static int countBallsByColor(Basket basket, Color color) throws InvalidArgumentException {
         if (basket == null) {
-            throw new InvalidBasketException("Basket cannot be null.");
+            throw new InvalidArgumentException("Basket cannot be null.");
         }
         if (color == null) {
-            throw new InvalidBallPropertyException("Color cannot be null.");
+            throw new InvalidArgumentException("Color cannot be null.");
         }
         int ballsCounter = 0;
         for (var ball : basket) {

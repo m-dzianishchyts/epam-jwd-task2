@@ -3,10 +3,9 @@ package by.jwd.task2.runner;
 import by.jwd.task2.entity.Ball;
 import by.jwd.task2.entity.Basket;
 import by.jwd.task2.entity.Color;
-import by.jwd.task2.entity.InvalidBallException;
-import by.jwd.task2.entity.InvalidBallPropertyException;
+import by.jwd.task2.exception.IncompatibleStateException;
+import by.jwd.task2.exception.InvalidArgumentException;
 import by.jwd.task2.handler.BasketHandler;
-import by.jwd.task2.handler.InvalidBasketException;
 
 public class Runner {
 
@@ -17,9 +16,9 @@ public class Runner {
             Ball ball = new Ball();
             try {
                 ball.setWeight(Math.random() * 100);
-                ball.setColor(Color.values()[(int) (Math.random() * 30)]);
+                ball.setColor(Color.values()[(int) (Math.random() * 3)]);
                 basket.put(ball);
-            } catch (InvalidBallPropertyException | InvalidBallException e) {
+            } catch (InvalidArgumentException | IncompatibleStateException e) {
                 System.err.println(e.getMessage());
                 System.exit(-1);
             }
@@ -31,7 +30,7 @@ public class Runner {
         try {
             System.out.println("\nTotal weight: " + BasketHandler.calculateTotalWeight(basket));
             System.out.println("Blue balls in basket: " + BasketHandler.countBallsByColor(basket, Color.BLUE));
-        } catch (InvalidBasketException | InvalidBallPropertyException e) {
+        } catch (InvalidArgumentException e) {
             System.err.println(e.getMessage());
             System.exit(-1);
         }
