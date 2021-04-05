@@ -12,7 +12,7 @@ public class Basket implements Serializable, Iterable<Ball> {
 
     private static final int DEFAULT_CAPACITY = 10;
 
-    private final Set<Ball> balls;
+    private Set<Ball> balls;
     private int capacity;
     private int size;
 
@@ -53,9 +53,23 @@ public class Basket implements Serializable, Iterable<Ball> {
         return Set.copyOf(balls);
     }
 
+    public void setBalls(Set<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
+        if (balls == null) {
+            throw new InvalidArgumentException("Ball set cannot be null");
+        }
+        if (balls.contains(null)) {
+            throw new InvalidArgumentException("Ball set must not contain null.");
+        }
+        if (balls.size() > capacity) {
+            throw new IncompatibleStateException("Basket cannot fit this ball set. Capacity is too low.");
+        }
+        this.balls = new HashSet<>(balls);
+        size = this.balls.size();
+    }
+
     public void putAll(Set<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
         if (balls == null) {
-            throw new InvalidArgumentException("Ball collection cannot be null");
+            throw new InvalidArgumentException("Ball set cannot be null");
         }
         for (var ball : balls) {
             put(ball);

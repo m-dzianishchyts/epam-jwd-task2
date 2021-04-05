@@ -22,8 +22,8 @@ class BasketTest {
     void initBasket() throws InvalidArgumentException, IncompatibleStateException {
         testBasket = new Basket(INITIAL_BASKET_CAPACITY);
         initialBasketSize = 0;
-        initialBallSet = Set.of(new Ball(Color.RED, 10), new Ball(Color.BLUE, 11),
-                                       new Ball(Color.GREEN, 12), new Ball(Color.GREEN, 13));
+        initialBallSet = Set.of(new Ball(Color.RED, 10), new Ball(Color.BLUE, 11), new Ball(Color.GREEN, 12),
+                                new Ball(Color.GREEN, 13));
         for (var ball : initialBallSet) {
             testBasket.put(ball);
             initialBasketSize++;
@@ -47,7 +47,7 @@ class BasketTest {
 
     @Test
     void setCapacityValid() throws IncompatibleStateException, InvalidArgumentException {
-        for (var testCapacity : new int[] {20, 4}) {
+        for (var testCapacity : new int[]{20, 4}) {
             testBasket.setCapacity(testCapacity);
             assertEquals(testCapacity, testBasket.getCapacity());
         }
@@ -55,7 +55,7 @@ class BasketTest {
 
     @Test
     void setCapacityInvalid() {
-        for (var testCapacity : new int[] {-10, 0}) {
+        for (var testCapacity : new int[]{-10, 0}) {
             assertThrows(InvalidArgumentException.class, () -> testBasket.setCapacity(testCapacity));
         }
         assertThrows(IncompatibleStateException.class, () -> testBasket.setCapacity(initialBasketSize - 1));
@@ -64,6 +64,32 @@ class BasketTest {
     @Test
     void getBalls() {
         assertEquals(initialBallSet, testBasket.getBalls());
+    }
+
+    @Test
+    void setBallsValid() throws IncompatibleStateException, InvalidArgumentException {
+        Set<Ball> testBallSet = new HashSet<>() {{
+            add(new Ball(Color.CORAL, 41));
+            add(new Ball(Color.YELLOW, 28));
+            add(new Ball(Color.BLUE, 1));
+        }};
+        testBasket.setBalls(testBallSet);
+        assertEquals(testBallSet, testBasket.getBalls());
+        assertEquals(testBallSet.size(), testBasket.getSize());
+    }
+
+    @Test
+    void setBallsInvalid() throws IncompatibleStateException, InvalidArgumentException {
+        assertThrows(InvalidArgumentException.class, () -> testBasket.setBalls(null));
+        assertThrows(InvalidArgumentException.class, () -> testBasket.setBalls(new HashSet<>() {{
+            add(null);
+        }}));
+
+        testBasket.setCapacity(testBasket.getSize());
+        assertThrows(IncompatibleStateException.class, () -> testBasket.setBalls(new HashSet<>() {{
+            add(new Ball(Color.AQUAMARINE, 14));
+            addAll(initialBallSet);
+        }}));
     }
 
     @Test
