@@ -1,4 +1,4 @@
-# epam-jwd-task2
+# EPAM Java Web Development 2021 | Tesk 2
 
 <strong>Deadline – 10.00, 06.04.21</strong>
 <h2>Задание</h2>
