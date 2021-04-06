@@ -5,9 +5,8 @@ import by.epamtc.task2.exception.InvalidArgumentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,16 +14,16 @@ class BasketTest {
 
     private static Basket testBasket;
     private static final int INITIAL_BASKET_CAPACITY = 15;
-    private static Set<Ball> initialBallSet;
+    private static List<Ball> initialBallList;
     private static int initialBasketSize;
 
     @BeforeEach
     void initBasket() throws InvalidArgumentException, IncompatibleStateException {
         testBasket = new Basket(INITIAL_BASKET_CAPACITY);
         initialBasketSize = 0;
-        initialBallSet = Set.of(new Ball(Color.RED, 10), new Ball(Color.BLUE, 11), new Ball(Color.GREEN, 12),
-                                new Ball(Color.GREEN, 13));
-        for (var ball : initialBallSet) {
+        initialBallList = List.of(new Ball(Color.RED, 10), new Ball(Color.BLUE, 11), new Ball(Color.GREEN, 12),
+                                  new Ball(Color.GREEN, 13));
+        for (var ball : initialBallList) {
             testBasket.put(ball);
             initialBasketSize++;
         }
@@ -32,7 +31,9 @@ class BasketTest {
 
     @Test
     void initBasketInvalid() {
-        assertThrows(InvalidArgumentException.class, () -> testBasket = new Basket(-10));
+        for (var testCapacity : new int[]{-10, 0}) {
+            assertThrows(InvalidArgumentException.class, () -> testBasket = new Basket(testCapacity));
+        }
     }
 
     @Test
@@ -46,83 +47,129 @@ class BasketTest {
     }
 
     @Test
-    void setCapacityValid() throws IncompatibleStateException, InvalidArgumentException {
-        for (var testCapacity : new int[]{20, 4}) {
-            testBasket.setCapacity(testCapacity);
-            assertEquals(testCapacity, testBasket.getCapacity());
-        }
+    void setCapacityValidMinimal() throws IncompatibleStateException, InvalidArgumentException {
+        testBasket.setCapacity(initialBasketSize);
+        assertEquals(initialBasketSize, testBasket.getCapacity());
     }
 
     @Test
-    void setCapacityInvalid() {
-        for (var testCapacity : new int[]{-10, 0}) {
-            assertThrows(InvalidArgumentException.class, () -> testBasket.setCapacity(testCapacity));
-        }
+    void setCapacityValidAny() throws IncompatibleStateException, InvalidArgumentException {
+        testBasket.setCapacity(20);
+        assertEquals(20, testBasket.getCapacity());
+    }
+
+    @Test
+    void setCapacityInvalidNegative() {
+        assertThrows(InvalidArgumentException.class, () -> testBasket.setCapacity(-10));
+    }
+
+    @Test
+    void setCapacityInvalidZero() {
+        assertThrows(InvalidArgumentException.class, () -> testBasket.setCapacity(0));
+    }
+
+    @Test
+    void setCapacityInvalidBelowSize() {
         assertThrows(IncompatibleStateException.class, () -> testBasket.setCapacity(initialBasketSize - 1));
     }
 
     @Test
     void getBalls() {
-        assertEquals(initialBallSet, testBasket.getBalls());
+        assertEquals(initialBallList, testBasket.getBalls());
     }
 
     @Test
     void setBallsValid() throws IncompatibleStateException, InvalidArgumentException {
-        Set<Ball> testBallSet = new HashSet<>() {{
+        List<Ball> testBallSet = new ArrayList<>() {{
             add(new Ball(Color.CORAL, 41));
             add(new Ball(Color.YELLOW, 28));
             add(new Ball(Color.BLUE, 1));
         }};
         testBasket.setBalls(testBallSet);
         assertEquals(testBallSet, testBasket.getBalls());
-        assertEquals(testBallSet.size(), testBasket.getSize());
     }
 
     @Test
-    void setBallsInvalid() throws IncompatibleStateException, InvalidArgumentException {
+    void setBallsInvalidNull() {
         assertThrows(InvalidArgumentException.class, () -> testBasket.setBalls(null));
-        assertThrows(InvalidArgumentException.class, () -> testBasket.setBalls(new HashSet<>() {{
+    }
+
+    @Test
+    void setBallsInvalidContainingNull() {
+        assertThrows(InvalidArgumentException.class, () -> testBasket.setBalls(new ArrayList<>() {{
             add(null);
         }}));
+    }
 
+    @Test
+    void setBallsInvalidDuplicates() throws InvalidArgumentException {
+        Ball duplicateBall = new Ball(Color.AQUAMARINE, 12);
+        assertThrows(IncompatibleStateException.class,
+                     () -> testBasket.setBalls(List.of(duplicateBall, duplicateBall)));
+    }
+
+    @Test
+    void setBallsInvalidOverflow() throws IncompatibleStateException, InvalidArgumentException {
         testBasket.setCapacity(testBasket.getSize());
-        assertThrows(IncompatibleStateException.class, () -> testBasket.setBalls(new HashSet<>() {{
+        assertThrows(IncompatibleStateException.class, () -> testBasket.setBalls(new ArrayList<>() {{
             add(new Ball(Color.AQUAMARINE, 14));
-            addAll(initialBallSet);
+            addAll(initialBallList);
         }}));
     }
 
     @Test
     void putAllValid() throws InvalidArgumentException, IncompatibleStateException {
-        Set<Ball> testBallSet = Set.of(new Ball(Color.AZURE, 1), new Ball(Color.AQUAMARINE, 16));
-        Set<Ball> initialBallSetCopy = new HashSet<>(initialBallSet);
-        testBasket.putAll(testBallSet);
-        initialBallSetCopy.addAll(testBallSet);
-        assertEquals(initialBallSetCopy, testBasket.getBalls());
+        List<Ball> testBallList = List.of(new Ball(Color.AZURE, 1), new Ball(Color.AQUAMARINE, 16));
+        List<Ball> initialBallListCopy = new ArrayList<>(initialBallList);
+        testBasket.putAll(testBallList);
+        initialBallListCopy.addAll(testBallList);
+        assertEquals(initialBallListCopy, testBasket.getBalls());
     }
 
     @Test
-    void putAllInvalid() {
+    void putAllInvalidNull() {
         assertThrows(InvalidArgumentException.class, () -> testBasket.putAll(null));
     }
 
     @Test
-    void putValid() throws InvalidArgumentException, IncompatibleStateException {
-        Ball testBall = new Ball(Color.AZURE, 1);
-        Set<Ball> initialBallSetCopy = new HashSet<>(initialBallSet);
-        testBasket.put(testBall);
-        initialBallSetCopy.add(testBall);
-        assertEquals(initialBallSetCopy, testBasket.getBalls());
+    void putAllInvalidKnownDuplicates() {
+        Ball duplicateBall = List.copyOf(initialBallList).get(1);
+        assertThrows(IncompatibleStateException.class, () -> testBasket.putAll(List.of(duplicateBall, duplicateBall)));
     }
 
     @Test
-    void putInvalid() {
+    void putAllInvalidUnknownDuplicates() throws InvalidArgumentException {
+        Ball duplicateBall = new Ball(Color.AQUAMARINE, 12);
+        assertThrows(IncompatibleStateException.class, () -> testBasket.putAll(List.of(duplicateBall, duplicateBall)));
+    }
+
+    @Test
+    void putValid() throws InvalidArgumentException, IncompatibleStateException {
+        Ball testBall = new Ball(Color.RED, 10);
+        List<Ball> initialBallListCopy = new ArrayList<>(initialBallList);
+        testBasket.put(testBall);
+        initialBallListCopy.add(testBall);
+        assertEquals(initialBallListCopy, testBasket.getBalls());
+    }
+
+    @Test
+    void putInvalidNull() {
         assertThrows(InvalidArgumentException.class, () -> testBasket.put(null));
     }
 
     @Test
-    void isEmpty() {
+    void putInvalidDuplicate() {
+        Ball duplicateBall = List.copyOf(initialBallList).get(1);
+        assertThrows(IncompatibleStateException.class, () -> testBasket.put(duplicateBall));
+    }
+
+    @Test
+    void isEmptyFalse() {
         assertFalse(testBasket.isEmpty());
+    }
+
+    @Test
+    void isEmptyTrue() {
         testBasket = new Basket();
         assertTrue(testBasket.isEmpty());
     }
@@ -134,60 +181,100 @@ class BasketTest {
     }
 
     @Test
-    void removeAllValid() throws InvalidArgumentException, IncompatibleStateException {
-        testBasket.removeAll(new HashSet<>());
-        assertEquals(initialBallSet, testBasket.getBalls());
-
-        List<Ball> initialBallListCopy = List.copyOf(initialBallSet);
-        Set<Ball> testBallSet = Set.of(initialBallListCopy.get(0), initialBallListCopy.get(1));
-        Set<Ball> initialBallSetCopy = new HashSet<>(initialBallSet);
-        testBasket.removeAll(testBallSet);
-        initialBallSetCopy.removeAll(testBallSet);
-        assertEquals(initialBallSetCopy, testBasket.getBalls());
+    void removeAllValidEmpty() throws InvalidArgumentException, IncompatibleStateException {
+        testBasket.removeAll(new ArrayList<>());
+        assertEquals(initialBallList, testBasket.getBalls());
     }
 
     @Test
-    void removeAllInvalid() {
+    void removeAllValid() throws InvalidArgumentException, IncompatibleStateException {
+        List<Ball> initialBallListCopy = new ArrayList<>(initialBallList);
+        List<Ball> testBallList = List.of(initialBallListCopy.get(0), initialBallListCopy.get(1));
+        testBasket.removeAll(testBallList);
+        initialBallListCopy.removeAll(testBallList);
+        assertEquals(initialBallListCopy, testBasket.getBalls());
+    }
+
+    @Test
+    void removeAllInvalidNull() {
         assertThrows(InvalidArgumentException.class, () -> testBasket.removeAll(null));
     }
 
     @Test
-    void removeValid() throws InvalidArgumentException, IncompatibleStateException {
-        Ball testBall = List.copyOf(initialBallSet).get(1);
-        Set<Ball> initialBallSetCopy = new HashSet<>(initialBallSet);
-        testBasket.remove(testBall);
-        initialBallSetCopy.remove(testBall);
-        assertEquals(initialBallSetCopy, testBasket.getBalls());
+    void removeAllInvalidDuplicates() {
+        Ball duplicateBall = List.copyOf(initialBallList).get(1);
+        assertThrows(IncompatibleStateException.class,
+                     () -> testBasket.removeAll(List.of(duplicateBall, duplicateBall)));
     }
 
     @Test
-    void removeInvalid() {
+    void removeValid() throws InvalidArgumentException, IncompatibleStateException {
+        Ball testBall = List.copyOf(initialBallList).get(1);
+        List<Ball> initialBallListCopy = new ArrayList<>(initialBallList);
+        testBasket.remove(testBall);
+        initialBallListCopy.remove(testBall);
+        assertEquals(initialBallListCopy, testBasket.getBalls());
+    }
+
+    @Test
+    void removeInvalidNull() {
         assertThrows(InvalidArgumentException.class, () -> testBasket.remove(null));
     }
 
     @Test
-    void containsAllValid() throws InvalidArgumentException {
-        assertTrue(testBasket.containsAll(new HashSet<>()));
-
-        assertTrue(testBasket.containsAll(initialBallSet));
-        Set<Ball> initialBallSetCopy = new HashSet<>(initialBallSet);
-        initialBallSetCopy.add(new Ball(Color.AQUAMARINE, 20));
-        assertFalse(testBasket.containsAll(initialBallSetCopy));
+    void removeInvalidUnknown() throws InvalidArgumentException {
+        Ball testBall = new Ball(Color.AQUAMARINE, 12);
+        assertThrows(IncompatibleStateException.class, () -> testBasket.remove(testBall));
     }
 
     @Test
-    void containsAllInvalid() {
+    void containsAllValidEmpty() throws InvalidArgumentException {
+        assertTrue(testBasket.containsAll(new ArrayList<>()));
+    }
+
+    @Test
+    void containsAllValidItself() throws InvalidArgumentException {
+        assertTrue(testBasket.containsAll(initialBallList));
+    }
+
+    @Test
+    void containsAllValidModified() throws InvalidArgumentException {
+        List<Ball> initialBallListCopy = new ArrayList<>(initialBallList);
+        initialBallListCopy.add(new Ball(Color.AQUAMARINE, 20));
+        assertFalse(testBasket.containsAll(initialBallListCopy));
+    }
+
+    @Test
+    void containsAllValidKnownDuplicates() throws InvalidArgumentException {
+        Ball duplicateBall = List.copyOf(initialBallList).get(1);
+        assertTrue(testBasket.containsAll(List.of(duplicateBall, duplicateBall)));
+    }
+
+    @Test
+    void containsAllValidUnknownDuplicates() throws InvalidArgumentException {
+        Ball duplicateBall = new Ball(Color.AQUAMARINE, 12);
+        assertFalse(testBasket.containsAll(List.of(duplicateBall, duplicateBall)));
+    }
+
+    @Test
+    void containsAllInvalidNull() {
         assertThrows(InvalidArgumentException.class, () -> testBasket.containsAll(null));
     }
 
     @Test
-    void containsValid() throws InvalidArgumentException {
-        Ball testBall = List.copyOf(initialBallSet).get(1);
+    void containsValidKnown() throws InvalidArgumentException {
+        Ball testBall = List.copyOf(initialBallList).get(1);
         assertTrue(testBasket.contains(testBall));
     }
 
     @Test
-    void containsInvalid() {
+    void containsValidUnknown() throws InvalidArgumentException {
+        Ball testBall = new Ball(Color.AQUAMARINE, 12);
+        assertFalse(testBasket.contains(testBall));
+    }
+
+    @Test
+    void containsInvalidNull() {
         assertThrows(InvalidArgumentException.class, () -> testBasket.contains(null));
     }
 }

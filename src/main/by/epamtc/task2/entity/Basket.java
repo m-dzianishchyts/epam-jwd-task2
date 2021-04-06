@@ -4,15 +4,16 @@ import by.epamtc.task2.exception.IncompatibleStateException;
 import by.epamtc.task2.exception.InvalidArgumentException;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 public class Basket implements Serializable, Iterable<Ball> {
 
     private static final int DEFAULT_CAPACITY = 10;
 
-    private Set<Ball> balls;
+    private List<Ball> balls;
     private int capacity;
     private int size;
 
@@ -25,7 +26,7 @@ public class Basket implements Serializable, Iterable<Ball> {
     }
 
     public Basket() {
-        balls = new HashSet<>();
+        balls = new ArrayList<>();
         capacity = DEFAULT_CAPACITY;
         size = 0;
     }
@@ -48,28 +49,31 @@ public class Basket implements Serializable, Iterable<Ball> {
         this.capacity = capacity;
     }
 
-    // Returns an unmodifiable Set containing the balls.
-    public Set<Ball> getBalls() {
-        return Set.copyOf(balls);
+    // Returns an unmodifiable List containing the balls.
+    public List<Ball> getBalls() {
+        return List.copyOf(balls);
     }
 
-    public void setBalls(Set<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
+    public void setBalls(Collection<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
         if (balls == null) {
-            throw new InvalidArgumentException("Ball set cannot be null");
+            throw new InvalidArgumentException("Ball collection cannot be null");
         }
-        if (balls.contains(null)) {
-            throw new InvalidArgumentException("Ball set must not contain null.");
-        }
+        try {
+            if (balls.contains(null)) {
+                throw new InvalidArgumentException("Ball collection must not contain null.");
+            }
+        } catch (NullPointerException ignored) {}
         if (balls.size() > capacity) {
-            throw new IncompatibleStateException("Basket cannot fit this ball set. Capacity is too low.");
+            throw new IncompatibleStateException("Basket cannot fit this ball collection. Capacity is too low.");
         }
-        this.balls = new HashSet<>(balls);
+        this.balls = new ArrayList<>();
+        putAll(balls);
         size = this.balls.size();
     }
 
-    public void putAll(Set<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
+    public void putAll(Collection<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
         if (balls == null) {
-            throw new InvalidArgumentException("Ball set cannot be null");
+            throw new InvalidArgumentException("Ball collection cannot be null");
         }
         for (var ball : balls) {
             put(ball);
@@ -83,11 +87,12 @@ public class Basket implements Serializable, Iterable<Ball> {
         if (size == capacity) {
             throw new IncompatibleStateException("Basket is full.");
         }
-        boolean newBallProvided = balls.add(ball);
-        if (newBallProvided) {
-            size++;
-        } else {
+        boolean isDuplicate = contains(ball);
+        if (isDuplicate) {
             throw new IncompatibleStateException("Basket already contains this ball.");
+        } else {
+            balls.add(ball);
+            size++;
         }
     }
 
@@ -96,9 +101,9 @@ public class Basket implements Serializable, Iterable<Ball> {
         size = 0;
     }
 
-    public void removeAll(Set<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
+    public void removeAll(Collection<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
         if (balls == null) {
-            throw new InvalidArgumentException("Ball set cannot be null");
+            throw new InvalidArgumentException("Ball collection cannot be null");
         }
         for (var ball : balls) {
             remove(ball);
@@ -109,17 +114,18 @@ public class Basket implements Serializable, Iterable<Ball> {
         if (ball == null) {
             throw new InvalidArgumentException("Ball cannot be null");
         }
-        boolean containedThisBall = balls.remove(ball);
-        if (containedThisBall) {
+        boolean containsThisBall = contains(ball);
+        if (containsThisBall) {
+            balls.remove(ball);
             size--;
         } else {
             throw new IncompatibleStateException("Basket does not contain this ball.");
         }
     }
 
-    public boolean containsAll(Set<Ball> balls) throws InvalidArgumentException {
+    public boolean containsAll(Collection<Ball> balls) throws InvalidArgumentException {
         if (balls == null) {
-            throw new InvalidArgumentException("Ball set cannot be null");
+            throw new InvalidArgumentException("Ball collection cannot be null");
         }
         for (var ball : balls) {
             if (!contains(ball)) {
@@ -133,8 +139,12 @@ public class Basket implements Serializable, Iterable<Ball> {
         if (ball == null) {
             throw new InvalidArgumentException("Ball cannot be null");
         }
-        boolean containsThisBall = balls.contains(ball);
-        return containsThisBall;
+        for (var ballInBasket : balls) {
+            if (ballInBasket == ball) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isEmpty() {
