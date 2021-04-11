@@ -28,8 +28,8 @@ public class Ball implements Serializable {
     @Override
     public int hashCode() {
         long weightLongBits = Double.doubleToLongBits(weight);
-        int hashCode = (int) (weightLongBits ^ (weightLongBits >>> 32));
-        hashCode = 31 * hashCode + (color.ordinal() ^ (color.ordinal() >>> 16));
+        int hashCode = (int) (weightLongBits ^ (weightLongBits >>> (Long.SIZE / 2)));
+        hashCode = (Integer.SIZE - 1) * hashCode + (color.ordinal() ^ (color.ordinal() >>> (Integer.SIZE / 2)));
         return hashCode;
     }
 
