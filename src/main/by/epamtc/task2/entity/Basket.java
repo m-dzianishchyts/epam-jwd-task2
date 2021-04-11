@@ -55,9 +55,7 @@ public class Basket implements Serializable, Iterable<Ball> {
     }
 
     public void setBalls(Collection<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
-        if (balls == null) {
-            throw new InvalidArgumentException("Ball collection cannot be null");
-        }
+        checkBallCollection(balls);
         try {
             if (balls.contains(null)) {
                 throw new InvalidArgumentException("Ball collection must not contain null.");
@@ -72,18 +70,14 @@ public class Basket implements Serializable, Iterable<Ball> {
     }
 
     public void putAll(Collection<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
-        if (balls == null) {
-            throw new InvalidArgumentException("Ball collection cannot be null");
-        }
+        checkBallCollection(balls);
         for (var ball : balls) {
             put(ball);
         }
     }
 
     public void put(Ball ball) throws InvalidArgumentException, IncompatibleStateException {
-        if (ball == null) {
-            throw new InvalidArgumentException("Ball cannot be null");
-        }
+        checkBall(ball);
         if (size == capacity) {
             throw new IncompatibleStateException("Basket is full.");
         }
@@ -96,24 +90,42 @@ public class Basket implements Serializable, Iterable<Ball> {
         }
     }
 
+    public boolean contains(Ball ball) throws InvalidArgumentException {
+        checkBall(ball);
+        for (var ballInBasket : balls) {
+            if (ballInBasket == ball) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void checkBall(Ball ball) throws InvalidArgumentException {
+        if (ball == null) {
+            throw new InvalidArgumentException("Ball cannot be null");
+        }
+    }
+
+    private void checkBallCollection(Collection<Ball> balls) throws InvalidArgumentException {
+        if (balls == null) {
+            throw new InvalidArgumentException("Ball collection cannot be null");
+        }
+    }
+
     public void clear() {
         balls.clear();
         size = 0;
     }
 
     public void removeAll(Collection<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
-        if (balls == null) {
-            throw new InvalidArgumentException("Ball collection cannot be null");
-        }
+        checkBallCollection(balls);
         for (var ball : balls) {
             remove(ball);
         }
     }
 
     public void remove(Ball ball) throws InvalidArgumentException, IncompatibleStateException {
-        if (ball == null) {
-            throw new InvalidArgumentException("Ball cannot be null");
-        }
+        checkBall(ball);
         boolean containsThisBall = contains(ball);
         if (containsThisBall) {
             balls.remove(ball);
@@ -124,27 +136,13 @@ public class Basket implements Serializable, Iterable<Ball> {
     }
 
     public boolean containsAll(Collection<Ball> balls) throws InvalidArgumentException {
-        if (balls == null) {
-            throw new InvalidArgumentException("Ball collection cannot be null");
-        }
+        checkBallCollection(balls);
         for (var ball : balls) {
             if (!contains(ball)) {
                 return false;
             }
         }
         return true;
-    }
-
-    public boolean contains(Ball ball) throws InvalidArgumentException {
-        if (ball == null) {
-            throw new InvalidArgumentException("Ball cannot be null");
-        }
-        for (var ballInBasket : balls) {
-            if (ballInBasket == ball) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean isEmpty() {
@@ -154,9 +152,9 @@ public class Basket implements Serializable, Iterable<Ball> {
 
     @Override
     public int hashCode() {
-        int hashCode = balls.hashCode() >>> 16;
-        hashCode = 31 * hashCode + (capacity ^ (capacity >>> 16));
-        hashCode = 31 * hashCode + (size ^ (size >>> 16));
+        int hashCode = balls.hashCode() >>> (Integer.SIZE / 2);
+        hashCode = (Integer.SIZE - 1) * hashCode + (capacity ^ (capacity >>> (Integer.SIZE / 2)));
+        hashCode = (Integer.SIZE - 1) * hashCode + (size ^ (size >>> (Integer.SIZE / 2)));
         return hashCode;
     }
 
