@@ -1,4 +1,4 @@
-package by.epamtc.task2.exception;
+package by.epamtc.basket.exception;
 
 public class IncompatibleStateException extends Exception {
 

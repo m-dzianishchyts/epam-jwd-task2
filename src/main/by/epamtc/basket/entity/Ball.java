@@ -1,6 +1,6 @@
-package by.epamtc.task2.entity;
+package by.epamtc.basket.entity;
 
-import by.epamtc.task2.exception.InvalidArgumentException;
+import by.epamtc.basket.exception.InvalidArgumentException;
 
 import java.io.Serializable;
 

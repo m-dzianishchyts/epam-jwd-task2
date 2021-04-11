@@ -1,7 +1,7 @@
-package by.epamtc.task2.entity;
+package by.epamtc.basket.entity;
 
-import by.epamtc.task2.exception.IncompatibleStateException;
-import by.epamtc.task2.exception.InvalidArgumentException;
+import by.epamtc.basket.exception.IncompatibleStateException;
+import by.epamtc.basket.exception.InvalidArgumentException;
 
 import java.io.Serializable;
 import java.util.ArrayList;

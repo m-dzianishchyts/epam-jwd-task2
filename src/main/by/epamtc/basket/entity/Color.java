@@ -1,4 +1,4 @@
-package by.epamtc.task2.entity;
+package by.epamtc.basket.entity;
 
 public enum Color {
     WHITE,
