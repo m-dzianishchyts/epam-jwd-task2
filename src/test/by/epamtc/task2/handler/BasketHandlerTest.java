@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BasketHandlerTest {
 
-    private static Basket testBasket;
     private static BasketHandler basketHandler;
     private static double testTotalWeight = 0;
     private static Map<Color, Integer> colorCounter;
@@ -24,7 +23,7 @@ class BasketHandlerTest {
     @BeforeAll
     static void init() throws InvalidArgumentException, IncompatibleStateException {
         initColorsCounter();
-        testBasket = new Basket();
+        Basket testBasket = new Basket();
         basketHandler = new BasketHandler(testBasket);
         Set<Ball> initBallSet = Set.of(new Ball(Color.RED, 10), new Ball(Color.BLUE, 11),
                                        new Ball(Color.GREEN, 12), new Ball(Color.GREEN, 13));
