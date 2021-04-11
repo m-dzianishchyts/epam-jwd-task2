@@ -6,10 +6,16 @@ import by.epamtc.task2.exception.InvalidArgumentException;
 
 public class BasketHandler {
 
-    public static double calculateTotalWeight(Basket basket) throws InvalidArgumentException {
+    private Basket basket;
+
+    public BasketHandler(Basket basket) throws InvalidArgumentException {
         if (basket == null) {
             throw new InvalidArgumentException("Basket cannot be null.");
         }
+        this.basket = basket;
+    }
+
+    public double calculateTotalWeight() throws InvalidArgumentException {
         double totalWeight = 0;
         for (var ball : basket) {
             totalWeight += ball.getWeight();
@@ -17,10 +23,7 @@ public class BasketHandler {
         return totalWeight;
     }
 
-    public static int countBallsByColor(Basket basket, Color color) throws InvalidArgumentException {
-        if (basket == null) {
-            throw new InvalidArgumentException("Basket cannot be null.");
-        }
+    public int countBallsByColor(Color color) throws InvalidArgumentException {
         if (color == null) {
             throw new InvalidArgumentException("Color cannot be null.");
         }
@@ -31,5 +34,13 @@ public class BasketHandler {
             }
         }
         return ballsCounter;
+    }
+
+    public Basket getBasket() {
+        return basket;
+    }
+
+    public void setBasket(Basket basket) {
+        this.basket = basket;
     }
 }

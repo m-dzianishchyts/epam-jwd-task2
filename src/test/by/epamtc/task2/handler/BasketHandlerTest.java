@@ -17,13 +17,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class BasketHandlerTest {
 
     private static Basket testBasket;
+    private static BasketHandler basketHandler;
     private static double testTotalWeight = 0;
     private static Map<Color, Integer> colorCounter;
 
     @BeforeAll
-    static void initBasket() throws InvalidArgumentException, IncompatibleStateException {
+    static void init() throws InvalidArgumentException, IncompatibleStateException {
         initColorsCounter();
         testBasket = new Basket();
+        basketHandler = new BasketHandler(testBasket);
         Set<Ball> initBallSet = Set.of(new Ball(Color.RED, 10), new Ball(Color.BLUE, 11),
                                        new Ball(Color.GREEN, 12), new Ball(Color.GREEN, 13));
         for (var ball : initBallSet) {
@@ -41,25 +43,24 @@ class BasketHandlerTest {
     }
 
     @Test
-    void calculateTotalWeightValid() throws InvalidArgumentException {
-        assertEquals(testTotalWeight, BasketHandler.calculateTotalWeight(testBasket));
+    void calculateTotalWeight() throws InvalidArgumentException {
+        assertEquals(testTotalWeight, basketHandler.calculateTotalWeight());
     }
 
     @Test
-    void calculateTotalWeightInvalid() {
-        assertThrows(InvalidArgumentException.class, () -> BasketHandler.calculateTotalWeight(null));
+    void createBasketHandlerInvalid() {
+        assertThrows(InvalidArgumentException.class, () -> new BasketHandler(null));
     }
 
     @Test
     void countBallsByColorValid() throws InvalidArgumentException {
         for (var testColor : Color.values()) {
-            assertEquals(colorCounter.get(testColor), BasketHandler.countBallsByColor(testBasket, testColor));
+            assertEquals(colorCounter.get(testColor), basketHandler.countBallsByColor(testColor));
         }
     }
 
     @Test
     void countBallsByColorInvalid() {
-        assertThrows(InvalidArgumentException.class, () -> BasketHandler.countBallsByColor(null, Color.BLUE));
-        assertThrows(InvalidArgumentException.class, () -> BasketHandler.countBallsByColor(testBasket, null));
+        assertThrows(InvalidArgumentException.class, () -> basketHandler.countBallsByColor(null));
     }
 }

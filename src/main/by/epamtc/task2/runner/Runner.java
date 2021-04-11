@@ -27,8 +27,9 @@ public class Runner {
         basket.forEach(System.out::println);
 
         try {
-            System.out.println("\nTotal weight: " + BasketHandler.calculateTotalWeight(basket));
-            System.out.println("Blue balls in basket: " + BasketHandler.countBallsByColor(basket, Color.BLUE));
+            BasketHandler basketHandler = new BasketHandler(basket);
+            System.out.println("\nTotal weight: " + basketHandler.calculateTotalWeight());
+            System.out.println("Blue balls in basket: " + basketHandler.countBallsByColor(Color.BLUE));
         } catch (InvalidArgumentException e) {
             System.err.println(e.getMessage());
             System.exit(-1);
