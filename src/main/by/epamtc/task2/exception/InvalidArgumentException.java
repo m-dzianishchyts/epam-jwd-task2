@@ -6,6 +6,14 @@ public class InvalidArgumentException extends Exception {
         super();
     }
 
+    public InvalidArgumentException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public InvalidArgumentException(Throwable cause) {
+        super(cause);
+    }
+
     public InvalidArgumentException(String message) {
         super(message);
     }
