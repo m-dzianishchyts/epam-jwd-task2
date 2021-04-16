@@ -15,24 +15,22 @@ public class Basket implements Serializable, Iterable<Ball> {
 
     private List<Ball> balls;
     private int capacity;
-    private int size;
 
     public Basket(int capacity) throws InvalidArgumentException {
-        this();
         if (capacity <= 0) {
             throw new InvalidArgumentException("Capacity must be positive.");
         }
+        balls = new ArrayList<>(capacity);
         this.capacity = capacity;
     }
 
     public Basket() {
         balls = new ArrayList<>();
         capacity = DEFAULT_CAPACITY;
-        size = 0;
     }
 
     public int getSize() {
-        return size;
+        return balls.size();
     }
 
     public int getCapacity() {
@@ -43,7 +41,7 @@ public class Basket implements Serializable, Iterable<Ball> {
         if (capacity <= 0) {
             throw new InvalidArgumentException("Capacity must be positive.");
         }
-        if (capacity < size) {
+        if (capacity < balls.size()) {
             throw new IncompatibleStateException("Cannot shrink basket. Capacity is less than current size.");
         }
         this.capacity = capacity;
@@ -60,13 +58,13 @@ public class Basket implements Serializable, Iterable<Ball> {
             if (balls.contains(null)) {
                 throw new InvalidArgumentException("Ball collection must not contain null.");
             }
-        } catch (NullPointerException ignored) {}
+        } catch (NullPointerException ignored) {
+        }
         if (balls.size() > capacity) {
             throw new IncompatibleStateException("Basket cannot fit this ball collection. Capacity is too low.");
         }
         this.balls = new ArrayList<>();
         putAll(balls);
-        size = this.balls.size();
     }
 
     public void putAll(Collection<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
@@ -78,7 +76,7 @@ public class Basket implements Serializable, Iterable<Ball> {
 
     public void put(Ball ball) throws InvalidArgumentException, IncompatibleStateException {
         checkBall(ball);
-        if (size == capacity) {
+        if (balls.size() == capacity) {
             throw new IncompatibleStateException("Basket is full.");
         }
         boolean isDuplicate = contains(ball);
@@ -86,7 +84,6 @@ public class Basket implements Serializable, Iterable<Ball> {
             throw new IncompatibleStateException("Basket already contains this ball.");
         } else {
             balls.add(ball);
-            size++;
         }
     }
 
@@ -114,7 +111,6 @@ public class Basket implements Serializable, Iterable<Ball> {
 
     public void clear() {
         balls.clear();
-        size = 0;
     }
 
     public void removeAll(Collection<Ball> balls) throws InvalidArgumentException, IncompatibleStateException {
@@ -129,7 +125,6 @@ public class Basket implements Serializable, Iterable<Ball> {
         boolean containsThisBall = contains(ball);
         if (containsThisBall) {
             balls.remove(ball);
-            size--;
         } else {
             throw new IncompatibleStateException("Basket does not contain this ball.");
         }
@@ -146,15 +141,13 @@ public class Basket implements Serializable, Iterable<Ball> {
     }
 
     public boolean isEmpty() {
-        boolean isEmpty = size == 0;
-        return isEmpty;
+        return balls.isEmpty();
     }
 
     @Override
     public int hashCode() {
         int hashCode = balls.hashCode() >>> (Integer.SIZE / 2);
         hashCode = (Integer.SIZE - 1) * hashCode + (capacity ^ (capacity >>> (Integer.SIZE / 2)));
-        hashCode = (Integer.SIZE - 1) * hashCode + (size ^ (size >>> (Integer.SIZE / 2)));
         return hashCode;
     }
 
@@ -167,12 +160,13 @@ public class Basket implements Serializable, Iterable<Ball> {
             return false;
         }
         Basket basket = (Basket) o;
-        return capacity == basket.capacity && size == basket.size && balls.equals(basket.balls);
+        return capacity == basket.capacity && balls.equals(basket.balls);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@{" + "balls=" + balls + ", capacity=" + capacity + ", size=" + size + '}';
+        return getClass().getSimpleName() + "@{" + "balls=" + balls + ", capacity=" + capacity + ", size=" +
+               getBalls().size() + '}';
     }
 
     @Override
