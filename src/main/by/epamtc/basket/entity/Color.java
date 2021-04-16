@@ -1,35 +1,26 @@
 package by.epamtc.basket.entity;
 
 public enum Color {
-    WHITE,
-    YELLOW,
-    BLUE,
-    RED,
-    GREEN,
-    BLACK,
-    BROWN,
-    AZURE,
-    IVORY,
-    TEAL,
-    SILVER,
-    PURPLE,
-    NAVY_BLUE,
-    PEA_GREEN,
-    GRAY,
-    ORANGE,
-    MAROON,
-    CHARCOAL,
-    AQUAMARINE,
-    CORAL,
-    FUCHSIA,
-    WHEAT,
-    LIME,
-    CRIMSON,
-    KHAKI,
-    HOT_PINK,
-    MAGENTA,
-    OLDEN,
-    PLUM,
-    OLIVE,
-    CYAN
+    WHITE("White", 0xFFFFFF),
+    BLACK("Black", 0x000000),
+    YELLOW("Yellow", 0xFFFF00),
+    BLUE("Blue", 0x0000FF),
+    RED("Red", 0xFF0000),
+    GREEN("Green", 0x00FF00);
+
+    private final int colorCode;
+    private final String name;
+
+    Color(String name, int colorCode) {
+        this.name = name;
+        this.colorCode = colorCode;
+    }
+
+    public int getColorCode() {
+        return colorCode;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
